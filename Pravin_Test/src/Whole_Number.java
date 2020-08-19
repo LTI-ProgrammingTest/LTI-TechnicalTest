@@ -20,7 +20,7 @@ public class Whole_Number {
 		System.out.println("Please enter a digit");
 		int digit = sc.nextInt();
 		System.out.println("Please 638537enter a number of occurances");
-		int occurances = sc.nextInt();
+		int occurances = sc.nextInt(); 
 
 		Map<Integer, Integer> map = new HashMap<Integer, Integer>();
 
