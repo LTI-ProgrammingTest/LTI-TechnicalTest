@@ -15,8 +15,11 @@ public class Whole_Number {
 
 	private static boolean wholeNumberTrueFalse() {
 		Scanner sc = new Scanner(System.in);
+		System.out.println("Please enter a whole number");
 		long num = sc.nextLong();
+		System.out.println("Please enter a digit");
 		int digit = sc.nextInt();
+		System.out.println("Please 638537enter a number of occurances");
 		int occurances = sc.nextInt();
 
 		Map<Integer, Integer> map = new HashMap<Integer, Integer>();
