@@ -16,6 +16,7 @@ import org.modelmapper.ModelMapper;
 import org.skife.jdbi.v2.DBI;
 
 import com.narender.demo.entity.Product;
+import com.narender.demo.entity.dto.DiscountedProductDTO;
 import com.narender.demo.entity.dto.ProductDTO;
 import com.narender.demo.repository.ProductDao;
 import com.narender.demo.repository.config.DatabaseConfig;
@@ -141,4 +142,24 @@ public class ProductController {
 		
 	}
 
+	//4. I want to get the discounted price of all the products by category
+	@GET
+	@Path("/discountedPrice/{category}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getDiscountedProductByCategory(@PathParam(value = "category") String category) {
+		if (null != category) {
+
+			List<Product> products = productDao.findByCategory(category);
+			List<DiscountedProductDTO> discountedProductDTOs = products
+					.stream()
+					.map(product -> modelMapper.map(product, DiscountedProductDTO.class))
+					.collect(Collectors.toList());
+			if (null != discountedProductDTOs)
+				return Response.status(200).entity(discountedProductDTOs).build();
+			else
+				return Response.status(404).entity("Category Not Found").build();
+		} else {
+			return Response.status(400).entity("Bad Request").build();
+		}
+	}
 }
