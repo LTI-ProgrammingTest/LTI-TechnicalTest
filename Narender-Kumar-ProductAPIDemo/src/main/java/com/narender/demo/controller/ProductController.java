@@ -2,6 +2,7 @@ package com.narender.demo.controller;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -11,9 +12,11 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.modelmapper.ModelMapper;
 import org.skife.jdbi.v2.DBI;
 
 import com.narender.demo.entity.Product;
+import com.narender.demo.entity.dto.ProductDTO;
 import com.narender.demo.repository.ProductDao;
 import com.narender.demo.repository.config.DatabaseConfig;
 
@@ -22,6 +25,7 @@ public class ProductController {
 
 	static DBI dbi = null;
 	static ProductDao productDao = null;
+	ModelMapper modelMapper = new ModelMapper();
 	
 	static {
 		dbi = DatabaseConfig.getDBI();
@@ -39,14 +43,21 @@ public class ProductController {
 	
 	public ProductController() {} 
 
+	// 1. I want to get the list of all the products across all the categories
 	@GET
 	@Path("/{category}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getProduct(@PathParam(value = "category") String category) {
+		
 		if (null != category) {
+			
 			List<Product> products =productDao.findByCategory(category);
-			if(null != products)
-				return Response.status(200).entity(products).build();
+			List<ProductDTO> productDTOs = products
+					  .stream()
+					  .map(product -> modelMapper.map(product, ProductDTO.class))
+					  .collect(Collectors.toList());
+			if(null != productDTOs)
+				return Response.status(200).entity(productDTOs).build();
 			else
 				return Response.status(404).entity("Category Not Found").build();
 		} else {
@@ -54,7 +65,8 @@ public class ProductController {
 		}
 		
 	}
-	
+
+	//2. I want to get the list of all the products by category or of a price less than or greater than a specified price for that product
 	@GET
 	@Path("/category/{category}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -68,14 +80,59 @@ public class ProductController {
 		}
 		else if (isPriceLess) {
 			List<Product> products =productDao.getProductByCategoryForLesserPrice(category,price);
-			if(null != products)
-				return Response.status(200).entity(products).build();
+			List<ProductDTO> productDTOs = products
+					  .stream()
+					  .map(product -> modelMapper.map(product, ProductDTO.class))
+					  .collect(Collectors.toList());
+			if(null != productDTOs)
+				return Response.status(200).entity(productDTOs).build();
 			else
 				return Response.status(404).entity("No record found").build();
 		} else if(!isPriceLess) {
 			List<Product> products =productDao.getProductByCategoryForGreaterPrice(category,price);
-			if(null != products)
-				return Response.status(200).entity(products).build();
+			List<ProductDTO> productDTOs = products
+					  .stream()
+					  .map(product -> modelMapper.map(product, ProductDTO.class))
+					  .collect(Collectors.toList());
+			if(null != productDTOs)
+				return Response.status(200).entity(productDTOs).build();
+			else
+				return Response.status(404).entity("No record found").build();
+		} else {
+			return Response.status(400).entity("Bad Request").build();
+		}
+		
+	}
+	//3. I want to get the list of all the products by company or of a price less than or greater than a specified price for that company
+	@GET
+	@Path("/company/{company}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getProductByCompany(
+			@PathParam(value = "company") String company,
+			@QueryParam(value = "price") BigDecimal price,
+			@QueryParam(value = "isPriceLess") Boolean isPriceLess
+			) {
+		if (null == company || null == price || null == isPriceLess) {
+			return Response.status(400).entity("Bad Request").build();
+		}
+		else if (isPriceLess) {
+			List<Product> products =productDao.getProductByCompanyForLesserPrice(company,price);
+			List<ProductDTO> productDTOs = products
+					  .stream()
+					  .map(product -> modelMapper.map(product, ProductDTO.class))
+					  .collect(Collectors.toList());
+			if(null != productDTOs)
+				return Response.status(200).entity(productDTOs).build();
+			else
+				return Response.status(404).entity("No record found").build();
+		} else if(!isPriceLess) {
+			List<Product> products =productDao.getProductByCompanyForGreaterPrice(company,price);
+			List<ProductDTO> productDTOs = products
+					  .stream()
+					  .map(product -> modelMapper.map(product, ProductDTO.class))
+					  .collect(Collectors.toList());
+			if(null != productDTOs)
+				return Response.status(200).entity(productDTOs).build();
 			else
 				return Response.status(404).entity("No record found").build();
 		} else {

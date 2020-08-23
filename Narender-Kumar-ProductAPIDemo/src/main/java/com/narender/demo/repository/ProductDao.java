@@ -44,4 +44,10 @@ public interface ProductDao {
 	
 	@SqlQuery("select * from PUBLIC.PRODUCT where category = :category and price >= :price ")
 	List<Product> getProductByCategoryForGreaterPrice(@Bind("category") String category,@Bind("price") BigDecimal price);
+	
+	@SqlQuery("select * from PUBLIC.PRODUCT where company = :company and price <= :price ")
+	List<Product> getProductByCompanyForLesserPrice(@Bind("company") String category,@Bind("price") BigDecimal price);
+	
+	@SqlQuery("select * from PUBLIC.PRODUCT where company = :company and price >= :price ")
+	List<Product> getProductByCompanyForGreaterPrice(@Bind("company") String category,@Bind("price") BigDecimal price);
 }
