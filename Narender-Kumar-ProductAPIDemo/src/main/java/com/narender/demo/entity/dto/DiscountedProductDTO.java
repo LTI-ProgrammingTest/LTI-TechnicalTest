@@ -24,6 +24,9 @@ public class DiscountedProductDTO {
 	public void setCompany(String company) {
 		this.company = company;
 	}
+	public void setDiscountedPrice(BigDecimal discountedPrice) {
+		this.discountedPrice = discountedPrice;
+	}
 	public String getProduct() {
 		return product;
 	}
@@ -51,8 +54,6 @@ public class DiscountedProductDTO {
 	public BigDecimal getDiscountedPrice() {
 		return discountedPrice;
 	}
-	public void setDiscountedPrice(BigDecimal discountedPrice) {
-		this.discountedPrice = this.getPrice().subtract((this.getPrice().multiply((this.discount.divide(new BigDecimal(100))))));
-	}
+	
 	
 }

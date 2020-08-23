@@ -154,6 +154,7 @@ public class ProductController {
 					.stream()
 					.map(product -> modelMapper.map(product, DiscountedProductDTO.class))
 					.collect(Collectors.toList());
+			discountedProductDTOs.forEach(p -> p.setDiscountedPrice(p.getPrice().subtract((p.getPrice().multiply((p.getDiscount().divide(new BigDecimal(100))))))));
 			if (null != discountedProductDTOs)
 				return Response.status(200).entity(discountedProductDTOs).build();
 			else
