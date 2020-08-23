@@ -1,0 +1,6 @@
+com\narender\demo\controller\ProductController.class
+com\narender\demo\entity\Product.class
+com\narender\demo\entity\mapiing\ProductMapper.class
+com\narender\demo\repository\config\DatabaseConfig.class
+com\narender\demo\repository\ProductDao.class
+com\narender\demo\entity\dto\ProductDTO.class
